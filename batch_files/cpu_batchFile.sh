@@ -19,5 +19,5 @@
 
 
 # running AUM3 dataset
-apptainer exec  --bind ./data:/mnt,./:/images computeNodes_aum3.sif conda run -n myenv python /workspace/main.py --model nn --dataset Salinas --training_sample 0.95 --runs 30 > cpu_nn_30_Salinas_0.95.txt  
+apptainer exec  --bind ./data:/mnt,./:/images computeNodes_aum3.sif conda run -n myenv python /workspace/main.py --model nn --dataset AUM3 --training_sample 0.95 --runs 30 > cpu_nn_30_AUM3_0.95.txt  
 
