@@ -16,6 +16,6 @@
 
 # srun apptainer exec --bind ./data:/mnt,./:/images test_computeNode.sif conda list
 
-# running AUM3
+# running AUM3 dataset
 # added "--nv" for running on the gpu
 apptainer exec --nv --bind ./data:/mnt,./:/images computeNodes_aum3.sif conda run -n myenv python /workspace/main.py --model threeLayer --dataset AUM3 --training_sample 0.95 --runs 30 --cuda 0 > gpu_threeLayer_30_AUM3_0.95.txt
