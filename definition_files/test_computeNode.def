@@ -1,0 +1,86 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%setup
+    # Create a directory called "workspace" at the root of the images file system.
+    mkdir ${SINGULARITY_ROOTFS}/workspace
+    # This definition file creates a container to run in a node without internet connection. 
+    # The data/Datasets folder should contain all folders with the required datasets.
+    mkdir -p ${SINGULARITY_ROOTFS}/workspace/data/Datasets
+    mkdir ${SINGULARITY_ROOTFS}/workspace/three_layer_classification
+    # Create a directory called "data" and a directory called "Datasets" inside that folder on the host system.
+    # mkdir -p data/Datasets
+
+%files
+    # Copy files from the host machine to the workspce folder on the Singularity image.
+    main.py /workspace
+    models.py /workspace
+    datasets.py /workspace
+    custom_datasets.py /workspace
+    inference.py /workspace
+    utils.py /workspace
+    License /workspace
+    README.md /workspace
+    requirements.txt /workspace
+    start.sh /workspace
+    three_layer_classification/*.py /workspace/three_layer_classification
+    data/Datasets/* /workspace/data/Datasets
+     
+%environment
+    # Set environment variables
+    # export LISTEN_PORT=8097
+    export LC_ALL=C
+    export PATH=/opt/conda/bin:$PATH
+    # export DEBIAN_FRONTEND=noninteractive
+
+%post
+    # Install necessary packages
+    apt-get update 
+    apt-get install -y curl
+    apt-get install -y tzdata
+    apt-get install -y bzip2
+    apt-get install -y ca-certificates
+    apt-get install ffmpeg libsm6 libxext6  -y
+    ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+    dpkg-reconfigure --frontend noninteractive tzdata
+    apt install -y python3-pip
+    # curl -o ~/miniconda.sh -O  https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh  && \
+    # -k allows download but makes transfer insecure
+    curl -o ~/miniconda.sh -O -k https://repo.anaconda.com/miniconda/Miniconda3-py39_23.5.2-0-Linux-x86_64.sh && \
+    chmod +x ~/miniconda.sh && \
+    ~/miniconda.sh -b -p /opt/conda && \
+    rm ~/miniconda.sh
+    rm -rf /var/lib/apt/lists/*
+    # /opt/conda init bash
+    #/opt/conda/bin/conda install --name -p /opt/conda/envs/myenv --file requirements.txt
+    /opt/conda/bin/conda config --add channels conda-forge
+    /opt/conda/bin/conda config --add channels ravelbio 
+    /opt/conda/bin/conda create --file /workspace/requirements.txt -p /opt/conda/envs/myenv
+    /opt/conda/bin/conda init bash
+    #/opt/conda/bin/conda activate myenv
+
+%runscript
+    # When the SIF file is run, it will download the packages listed in requirements.txt if not already installed.
+    echo "installing packages"
+    # pip3 install --no-cache-dir -r /workspace/requirements.txt
+    # /opt/conda/bin/conda activate myenv
+    # It will then run start.sh
+    sh /workspace/start.sh
+
+%startscript
+    nc -lp $LISTEN_PORT
+    
+%test
+    grep -q NAME=\"Ubuntu\" /etc/os-release
+    if [ $? -eq 0 ]; then
+        echo "Container base is Ubuntu as expected."
+    else
+        echo "Container base is not Ubuntu."
+    fi
+%labels
+    Author d@sylabs.io
+    Version v0.0.1
+
+%help
+    This is a demo container used to illustrate a def file that uses all
+    supported sections.
