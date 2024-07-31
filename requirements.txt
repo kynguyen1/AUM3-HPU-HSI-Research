@@ -1,0 +1,29 @@
+# #numpy==1.20.0
+# numpy==1.19.5
+# # numpy
+# # spectral==0.20
+# scipy>=1.4.1
+# tqdm>=4.15.0
+# # visdom>=0.1.5
+# seaborn>=0.8
+# scikit-learn>=0.22.1
+# scikit-image>=0.13.1
+# torch>=0.4.0
+# matplotlib>=3.1.3
+# joblib==1.1.0
+# keras>=2.9.0
+# tensorflow>=2.5.2
+# pytorch-ranger==0.1.1
+# torch-optimizer==0.0.1a12
+numpy
+spectral
+scipy
+tqdm
+visdom
+seaborn
+scikit-learn
+scikit-image
+matplotlib
+torchsummary
+joblib
+pytorch
