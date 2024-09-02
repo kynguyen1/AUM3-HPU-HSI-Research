@@ -485,10 +485,14 @@ def show_results(results, model, dataset, training_sample, gpu, runs, label_valu
     else:
         text += "Total time: {:.03f}\n".format(total_time)
 
-    # vis.text(text.replace('\n', '<br/>'))
-    f = open("/images/experimentResults.txt", "w")
+    
+    # Creating proper name for the output files with results 
+    node = "CPU" if gpu < 0 else "GPU"
+    my_file =  node + "_" + model + "_" + str(runs) + "_" + dataset + "_" + str(training_sample) + ".txt"
+
+    f = open("/images/" + my_file, "w")
     f.write("Dataset: " + dataset + "\n")
-    f = open("/images/experimentResults.txt", "a")
+    f = open("/images/" + my_file, "a")
     f.write("Model: " + model + "\n")
     f.write("Training Percentage: " + str(training_sample) + "\n")
     f.write(get_gpu_info(gpu))
